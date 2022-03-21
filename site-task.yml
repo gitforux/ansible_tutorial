@@ -1,0 +1,66 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: install update for all (Ubuntu)
+    tags: always
+    apt: 
+      upgrade: dist
+      update_cache: yes      
+    when: ansible_distribution in ["Ubuntu"]
+
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: install apps for all (Ubuntu)
+    tags: apps
+    apt: 
+      name: 
+        - gparted
+      state: latest      
+    when: ansible_distribution == "Ubuntu"
+
+
+- hosts: web_servers
+  become: true
+  tasks:
+
+  - name: install apache2,php package (Ubuntu)
+    tags: web,server
+    apt: 
+      name: 
+        - apache2
+        - libapache2-mod-php
+      state: latest      
+    when: ansible_distribution == "Ubuntu"
+
+
+- hosts: db_servers
+  become: true
+  tasks:
+
+  - name: install mysql server package (Ubuntu)
+    tags: db,server
+    apt: 
+      name: 
+        - mysql-server
+        - mysql-client 
+      state: latest      
+    when: ansible_distribution == "Ubuntu"
+
+
+- hosts: file_servers
+  become: true
+  tasks:
+
+  - name: install samba package (Ubuntu)
+    tags: files,server  
+    package: 
+      name: 
+        - samba
+      state: latest      
+    when: ansible_distribution == "Ubuntu"
